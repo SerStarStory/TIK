@@ -7,6 +7,12 @@ object EncodingTools {
         return builder.toString()
     }
 
+    fun encodeToString(msg: ByteArray, map: Map<Byte, String>): String {
+        val builder = StringBuilder()
+        msg.forEach { builder.append(map[it]) }
+        return builder.toString()
+    }
+
     fun decodeToString(msg: String, map: Map<Byte, String>): String {
         val codeToByte = map.map { it.value to it.key }.toMap()
         val builder = StringBuilder()

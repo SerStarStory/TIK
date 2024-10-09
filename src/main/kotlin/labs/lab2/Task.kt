@@ -49,7 +49,7 @@ fun main() {
     println("Entropy for discretized image with 4 levels and quantized with 64 levels = $d4q64Entropy")
 
     val restored2 = restoreImage(discretized2, 2).write("r2")
-    val restored4 = restoreImage(discretized2, 4).write("r4")
+    val restored4 = restoreImage(discretized4, 4).write("r4")
 
     val kullbackQ8 = kullbackLeiblerDivergence(grayscale, quantized8Levels)
     val kullbackQ16 = kullbackLeiblerDivergence(grayscale, quantized16Levels)
@@ -116,9 +116,9 @@ private fun quantize(image: BufferedImage, level: Int): BufferedImage {
 }
 
 private fun quantizeColor(color: Int, level: Int): Int {
-    val b = quantizeValue(color and 0xFF, level)
-    val g = quantizeValue((color shr 8) and 0xFF, level)
-    val r = quantizeValue((color shr 16) and 0xFF, level)
+    val b = quantizeValue(color and 0xFF, 256 / level)
+    val g = quantizeValue((color shr 8) and 0xFF, 256 / level)
+    val r = quantizeValue((color shr 16) and 0xFF, 256 / level)
     val a = color and 0xFF000000.toInt()
     return a or (r shl 16) or (g shl 8) or b
 }
@@ -138,7 +138,7 @@ private fun kullbackLeiblerDivergence(orig: BufferedImage, copy: BufferedImage):
     repeat(min(origBrightness.size, copyBrightness.size)) {
         if (origBrightness[it] <= 0) return@repeat
         if (copyBrightness[it] <= 0) return@repeat
-        d += origBrightness[it] * log2(origBrightness[it] / copyBrightness[it])
+        d += copyBrightness[it] * log2(copyBrightness[it] / origBrightness[it])
     }
     return d
 }

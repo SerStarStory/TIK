@@ -22,6 +22,18 @@ object HuffmanEncoding {
         return nodes[0]
     }
 
+    fun createTree(bytes: ByteArray, frequency: DoubleArray): HuffmanTreeNode {
+        val nodes = bytes.groupBy { it }.map { HuffmanTreeNode(it.key, (frequency[it.key.toInt()] * 100).toInt(), null, null) }.toMutableList()
+        while (nodes.size > 1) {
+            nodes.sortBy { it.frequency }
+            val left = nodes.removeFirst()
+            val right = nodes.removeFirst()
+            val node = HuffmanTreeNode(left, right)
+            nodes.add(node)
+        }
+        return nodes[0]
+    }
+
     fun createCodesMap(bytes: ByteArray): Map<Byte, String> {
         return createCodesMap(createTree(bytes))
     }
